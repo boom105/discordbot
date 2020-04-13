@@ -75,8 +75,8 @@ bot.on('message', message=> {
 
         case 'avatar': {
             if(!args[1]){
-                message.channel.send("@ người muốn xem avatar đi bạn!");
-            
+                return message.channel.send("@ người muốn xem avatar đi bạn!");
+                
             }
             else{
                 let mem = message.mentions.users.first();
@@ -90,11 +90,12 @@ bot.on('message', message=> {
                     .setImage(mem.avatarURL)
 
                     message.channel.send(embed);
+                    break;
                 }
+                break;
             }
         }
         case 'command':{
-
             message.channel.send("Command List: 1. !card \n2. !avatar\n3. Đang phát triển thêm=))");
             break;
         }
