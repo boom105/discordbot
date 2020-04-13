@@ -96,7 +96,7 @@ bot.on('message', message=> {
             }
         }
         case 'command':{
-            message.channel.send("Command List: 1. !card \n2. !avatar\n3. Đang phát triển thêm=))");
+            message.channel.send("Command List: \n1. !card \n2. !avatar\n3. Đang phát triển thêm=))");
             break;
         }
     }
