@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 dotenv.config()
 
-const API_KEY = "dc4b94d5728b4fdcb05558d441820397";
-const API_SECRET = "91cb5278ac52438981499b689f4eeac4";
+const API_KEY = process.env.API_KEY;
+const API_SECRET = process.env.API_SECRET;
 const TOKEN_EXPIRE = '60s';
 const ENCODE_ALG = 'HS256';
 

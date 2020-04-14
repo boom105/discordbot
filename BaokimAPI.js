@@ -30,17 +30,22 @@ let getVATList = function() {
 //     console.log(err)
 // });
 
+function getBalance(){
+    return axios.get(baseURL + 'api/v4/account/detail' + '?jwt=' + GetToken.generateToken());
+
+}
+
 function buyCard(isp,amount){
 
     var service_item_id = 0 ;
     switch(isp){
-        case 'viettel' || 'VIETTEL':
+        case 'viettel':
             service_item_id = 1;
             break;
-        case 'vinaphone' || 'VINA' || 'VINAPHONE':
+        case 'vinaphone' || 'vina' :
             service_item_id = 2;
             break;
-        case 'mobifone' || 'MOBI' || 'MOBIFONE' :
+        case 'mobifone' || 'mobi' :
             service_item_id = 3;
             break;
     }
@@ -56,15 +61,10 @@ function buyCard(isp,amount){
     return respone;
 }
 
-// buyCard('VINAPHONE',10000).then((result) => {
-//     console.log(result.data)
-//     console.log('PIN: ' + result.data.data.pin + '\nSeri: ' + result.data.data.seri);
-// }).catch((err) => {
-//     console.log(err)
-// });
 
 module.exports = {
     buyCard : buyCard,
-    getVATList :getVATList
+    getVATList : getVATList,
+    getBalance : getBalance
 }
 
