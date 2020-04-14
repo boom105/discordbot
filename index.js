@@ -112,9 +112,7 @@ bot.on('message', message=> {
                     message.channel.send("Member chưa set avatar");
                 }
                 var embed = new MessageEmbed()
-                            .setTitle(`Avatar của ${user.username}`)
-                            .setColor('RANDOM')
-                            .setImage(user.avatarURL('jpg'));
+                            .setImage(user.avatarURL('jpg',256));
                             
                             
                 message.channel.send(embed);
@@ -130,9 +128,7 @@ bot.on('message', message=> {
                 }
                 else{
                     let embed = new MessageEmbed()
-                            .setTitle(`Avatar của ${mem.username}`)
-                            .setImage(mem.avatarURL('jpg'))
-                            .setColor('RANDOM');
+                            .setImage(mem.avatarURL('jpg',256))
                     message.channel.send(embed);
                     break;
                 }
