@@ -114,7 +114,7 @@ bot.on('message', message=> {
                 var embed = new MessageEmbed()
                             .setTitle(`Avatar của ${user.username}`)
                             .setColor('RANDOM')
-                            .setImage(user.avatarURL('jpg'));
+                            .setImage(user.avatarURL('png'));
                             
                             
                 message.channel.send(embed);
@@ -131,7 +131,7 @@ bot.on('message', message=> {
                 else{
                     let embed = new MessageEmbed()
                             .setTitle(`Avatar của ${mem.username}`)
-                            .setImage(mem.avatarURL('jpg'))
+                            .setImage(mem.avatarURL('png'))
                             .setColor('RANDOM');
                     message.channel.send(embed);
                     break;
