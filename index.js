@@ -112,7 +112,7 @@ bot.on('message', message=> {
                     message.channel.send("Member chưa set avatar");
                 }
                 var embed = new MessageEmbed()
-                            .setImage(user.avatarURL('jpg',512));
+                            .setImage(user.avatarURL('png'));
                             
                             
                             
@@ -130,7 +130,7 @@ bot.on('message', message=> {
                 }
                 else{
                     let embed = new MessageEmbed()
-                    .setImage(mem.avatarURL('jpg',512));
+                    .setImage(mem.avatarURL('png'));
                     message.channel.send(embed);
                     break;
                 }
