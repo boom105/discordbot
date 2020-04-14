@@ -42,10 +42,10 @@ function buyCard(isp,amount){
         case 'viettel':
             service_item_id = 1;
             break;
-        case 'vinaphone' || 'vina' :
+        case  'vina' :
             service_item_id = 2;
             break;
-        case 'mobifone' || 'mobi' :
+        case 'mobi' :
             service_item_id = 3;
             break;
     }

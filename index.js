@@ -140,7 +140,7 @@ bot.on('message', message=> {
 
 
         case 'command':{
-            message.channel.send("Command List: \n1. !card @member nhà_mạng or !card -random nhà_mạng {viettel, vinaphone, mobifone}" +
+            message.channel.send("Command List: \n1. !card @member nhà_mạng or !card -random nhà_mạng {viettel, vina, mobi}" +
                                                 "\n2. !avatar hoặc !avatar @member" +
                                                 "\n3. !balance" +
                                                  "\n4. Đang phát triển thêm=))");
