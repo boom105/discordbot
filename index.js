@@ -15,7 +15,7 @@ bot.on('ready',() => {
 })
 
 bot.on('guildMemberAdd', member => {
-    const channel = member.guild.channels.cache.find(ch => ch.name === 'general');
+    const channel = member.guild.channels.cache.find(ch => ch.name === 'chung');
 
     if(!channel) return;
     channel.send(`Chào mừng ${member} đến với server của bọn mình.\nVuốt sang trái, vào kênh voice Chung để vô voice chat bạn nhé!`);
@@ -113,10 +113,7 @@ bot.on('message', message=> {
                 }
                 var embed = new MessageEmbed()
                             .setImage(user.avatarURL('png'));
-                            
-                            
-                            
-                            
+                                                       
                 message.channel.send(embed);
                 break;
                 
