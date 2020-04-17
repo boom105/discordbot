@@ -67,7 +67,7 @@ bot.on('message', message=> {
     {
         case 'card':{
             
-           if(ID != '650581972560904202'){
+           if(ID == '650581972560904202'){
                 if(args.length > 3){
                     return message.reply('Sai cú pháp rồi!!!    command: !card @member nhà_mạng or !card -random nhà_mạng');
                 }
@@ -305,9 +305,9 @@ bot.on('message', message=> {
         case 'game': {
           message.channel.send('GameCenter commands list:\n' + 
                                 '/------------------- GAME LIST --------------------------/' +
-                                '\n1. !flip : tung đồng xu, winrate: 1/2, thưởng - phạt: 50 - 0' + 
-                                '\n2. !roulette: Cò quay nga, winrate: 4/6, thưởng - phạt: 300 - 1000' + 
-                                '\n3. !moneyheist: Cướp ngân hàng, winrate: 1/1000, thưởng - phạt: 20000 - 200, bonus 01 phần quà từ Big Boss' + 
+                                '\n1. !flip : tung đồng xu, winrate: 1/2, thưởng - phạt: 50 - 0, requirement: 0 points ' + 
+                                '\n2. !roulette: Cò quay nga, winrate: 4/6, thưởng - phạt: 300 - 1000, requirement: 1000 points'+ 
+                                '\n3. !moneyheist: Cướp ngân hàng, winrate: 1/1000, thưởng - phạt: 20000 - 200, bonus 01 phần quà từ Big Boss, requirement: 200 points' + 
                                 '\n4. !challenge @member số_points để thách đấu / !challenge -accecpt để nhận lời thách đấu (Cái này hơi khó, vẫn đang triển khai =)) )'+
                                 '\n/------------------ PLAYER INFO -------------------------/' + 
                                 '\n 1. !points : Kiểm tra số points hiện có' +
