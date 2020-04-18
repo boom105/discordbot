@@ -351,7 +351,7 @@ bot.on('message', message=> {
                 text += doc[i].username + ' has ' + doc[i].points + ' points\n'
                   
               }
-                message.channel.send(doc[i].username + ' has ' + doc[i].points + ' points');
+                message.channel.send(text);
                 message.channel.send('-----------------------------')
           })
           }
