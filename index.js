@@ -466,7 +466,7 @@ bot.on('message', message=> {
               return message.reply('Số points phải là số tự nhiên!');
             }
             else{
-              db.update({userID: mem.id},{$inc: {points: parseInt(args[2],10)}}, {upsert:false},function(err,number){              
+              db.update({userID: mem.id},{$set: {points: parseInt(args[2],10)}}, {upsert:false},function(err,number){              
               })
               message.reply('bạn vừa set số point của ' + mem.username + ' thành: ' + args[2]);
             }
