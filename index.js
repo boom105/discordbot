@@ -15,6 +15,8 @@ let arr = [];
 var db = new Datastore({filename: './gamedata'});
 db.loadDatabase();
 
+var userMap = new Map();
+
 
 bot.on('ready',() => {
     console.log('This bot is online!');
@@ -369,7 +371,7 @@ bot.on('message', message=> {
                       return message.reply('Command: !lottery nhà_mạng {viettel, vina, mobi} ');                    
                   }
                   else{
-                    var poss = random.int(1,2);
+                    var poss = random.int(1,3);
                     if(poss == 1){
                       API.buyCard(isp,10000).then((result) => {
                         if(result.data.data.success == 1){
@@ -466,7 +468,7 @@ bot.on('message', message=> {
             else{
               db.update({userID: mem.id},{$inc: {points: parseInt(args[2],10)}}, {upsert:false},function(err,number){              
               })
-              message.reply('bạn vừa set số point của ' + ID + ' thành: ' + args[2]);
+              message.reply('bạn vừa set số point của ' + mem.username + ' thành: ' + args[2]);
             }
     
           }
@@ -490,7 +492,7 @@ bot.on('message', message=> {
                                 '\n2. !roulette: Cò quay nga, winrate: 4/6, thưởng - phạt: 300 - 1000, requirement: 1000 points'+ 
                                 '\n3. !moneyheist: Cướp ngân hàng, winrate: 1/100, thưởng - phạt: 20000 - 200, bonus 01 phần quà từ Big Boss, requirement: 200 points' + 
                                 '\n4. !challenge @member số_points để thách đấu / !challenge -accecpt @người_thách_đấu để xác nhận lời thách đấu '+
-                                '\n5. !lottery nhà_mạng: Tích đủ 50k points thì được thử vận may một lần, winrate: 1/3, thưởng-phạt: card - 50k points'+
+                                '\n5. !lottery nhà_mạng: Tích đủ 50k points thì được thử vận may một lần, winrate: 1/3, thưởng-phạt: card(20) - 50k points'+
                                 '\n/---------------------Extension------------------------/'+
                                 '\n1. !kqxs: Lấy lết quả xổ số ngày gần đây nhất' + 
                                 '\n2. !avatar hoặc !avatar @member:  Xem avatar của bản thân hoặc thành viên khác'+
@@ -506,7 +508,8 @@ bot.on('message', message=> {
                                 '\n/---------------------Update Note Ver: 0.0.2-------' + 
                                 '\n1. Giờ các lệnh chơi game chỉ dùng được trong #gamecenter ngoại trừ 02 lệnh !challenge' +
                                 '\n2. Tăng winrate lên thành 1/100, thưởng-phạt points giữ nguyên'+
-                                '\n3. Cập nhật thêm lệnh !lottery và !kqxs.')
+                                '\n3. Cập nhật thêm lệnh !lottery và !kqxs.' + 
+                                '\n4. Giờ slowmode của #gamecenter đã lên 15s')
             break;
         }
         
