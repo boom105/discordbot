@@ -344,11 +344,14 @@ bot.on('message', message=> {
             })
           }
           else if(args[1] == '-top'){
+            var text = '';
             db.find({}).sort({points: -1}).exec(function(err,doc){
                 message.channel.send('------------TOP 5------------')
               for(i = 0; i <5; i++){
-                  message.channel.send(doc[i].username + ' has ' + doc[i].points + ' points');
+                text += doc[i].username + ' has ' + doc[i].points + ' points\n'
+                  
               }
+                message.channel.send(doc[i].username + ' has ' + doc[i].points + ' points');
                 message.channel.send('-----------------------------')
           })
           }
