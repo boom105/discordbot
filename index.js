@@ -452,7 +452,7 @@ bot.on('message', message=> {
               else{
                 db.update({userID: luckymem.id},{$inc: {points: parseInt(args[2].trim(),10)}}, {upsert:false},function(err,number){              
                 })
-                return message.reply('bạn vừa cộng cho member ' + luckymem.username + args[2] + ' points!');
+                return message.reply('bạn vừa cộng cho member ' + luckymem.username + ' '+ args[2] + ' points!');
               }
             }
     
@@ -532,7 +532,7 @@ bot.on('message', message=> {
                                 '\n3. Cập nhật thêm lệnh !lottery và !kqxs.' + 
                                 '\n4. Giờ slowmode của #gamecenter đã lên 15s' + 
                                 '-----------------------------------------------' +
-                                '1.Thêm command: !challenge -cancel để hủy thách đấu!');
+                                '\n1.Thêm command: !challenge -cancel để hủy thách đấu!');
             break;
         }
         
