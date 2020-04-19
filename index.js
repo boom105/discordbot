@@ -363,8 +363,8 @@ bot.on('message', message=> {
           else if(args[1] == '-top'){
             var text = '';
             db.find({}).sort({points: -1}).exec(function(err,doc){
-                text += '------------TOP 5------------\n' ;
-              for(i = 0; i <5; i++){
+                text += '------------TOP 10------------\n' ;
+              for(i = 0; i <10; i++){
                 text += doc[i].username + ' has ' + doc[i].points + ' points\n'
                   
               }
