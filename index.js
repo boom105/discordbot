@@ -66,7 +66,7 @@ bot.on('message', message=> {
     var ID = message.author.id; 
     var author = message.author.username;
     
-    let args = message.content.substring(PREFIX.length).split(" ");
+    let args = message.content.substring(PREFIX.length).match(/\S+/g);
     var allow = 0;
     if(message.channel.id == '700715951532015704'){
       allow = 1;
@@ -218,7 +218,7 @@ bot.on('message', message=> {
                         db.update({userID: ID},{$inc: {points: -challenger.amount}},{},(err)=>{})
     
                         message.channel.send('Chúc mừng ' + `<@!${op.id}>` +'! Bạn vừa thắng cược ' + challenger.amount + ' sau cuộc đấu súng đẫm máu với ' + challenger.username + '!!!!');               
-                        message.reply('Này ' + author + '! Dưới Suối vàng, gửi lời hỏi thăm sức khỏe tới Howard Roark hộ tôi nhé! Cảm ơn!\nQuên!Bạn vừa bị trừ ' + challenger.amount + ' points nữa nhé');   
+                        message.reply('Này ' + author + '! Dưới Suối vàng, gửi lời hỏi thăm sức khỏe tới Howard Roark hộ tôi nhé! Cảm ơn!\nQuên! Bạn vừa bị trừ ' + challenger.amount + ' points nữa bạn nhé');   
                         
                       }
                     }
@@ -244,14 +244,17 @@ bot.on('message', message=> {
           else{//
             var op = message.mentions.users.first();
             if(!op){
-              message.channel.send('Command: !challenge @member số_points / !challenge -accept @member !');
+              message.channel.send('Command: !challenge @member số_points / !challenge -accept @member / !challenge -cancel!');
             }
             else if(op.id == ID){
                 return message.reply('Bạn không thể tự thách đấu bản thân!')
             }
             else{
-              if(!Number.isInteger(parseInt(args[2])) || Number.isInteger(parseInt(args[2])) < 0){
-                return message.channel.send('Số points phải là số tự nhiên');
+              if(!Number.isInteger(parseInt(args[2].trim(),10))){
+                return message.channel.send('Số points phải là số tự nhiên. Not: ' + ' \'' + args[2].trim() + ' \'');
+              }
+              else if(parseInt(args[2].trim(),10) < 0){
+                return message.channel.send('Số points phải > 0');
               }
               else {
                 db.find({userID: ID},function(err,doc){
@@ -360,13 +363,14 @@ bot.on('message', message=> {
           else if(args[1] == '-top'){
             var text = '';
             db.find({}).sort({points: -1}).exec(function(err,doc){
-                message.channel.send('------------TOP 5------------')
+                text += '------------TOP 5------------\n' ;
               for(i = 0; i <5; i++){
                 text += doc[i].username + ' has ' + doc[i].points + ' points\n'
                   
               }
+                text += '-----------------------------';
                 message.channel.send(text);
-                message.channel.send('-----------------------------')
+                
           })
           }
           break;
@@ -429,7 +433,7 @@ bot.on('message', message=> {
                 return message.reply('Số points phải là số tự nhiên!');
               }
               else{
-                db.update({},{$inc: {points: parseInt(args[2],10)}}, {upsert:false, multi:true},function(err,number){              
+                db.update({},{$inc: {points: parseInt(args[2].trim(),10)}}, {upsert:false, multi:true},function(err,number){              
                 })
                 return message.reply('bạn vừa cộng cho tất cả thành viên: ' + args[2] + ' points!');
               }
@@ -446,7 +450,7 @@ bot.on('message', message=> {
                 return message.reply('Số points phải là số tự nhiên!');
               }
               else{
-                db.update({userID: ID},{$inc: {points: parseInt(args[2],10)}}, {upsert:false},function(err,number){              
+                db.update({userID: luckymem.id},{$inc: {points: parseInt(args[2].trim(),10)}}, {upsert:false},function(err,number){              
                 })
                 return message.reply('bạn vừa cộng cho member ' + luckymem.username + args[2] + ' points!');
               }
@@ -479,7 +483,7 @@ bot.on('message', message=> {
             if(!mem){
               message.reply('Command: !setpoint @member số_point')
             }
-            if(!Number.isInteger(parseInt(args[2],10))){
+            if(!Number.isInteger(parseInt(args[2].trim(),10))){
               return message.reply('Số points phải là số tự nhiên!');
             }
             else{

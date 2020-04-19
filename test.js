@@ -1,7 +1,6 @@
-const API = require('./BaokimAPI')
 
-API.getBalance().then((result) => {
-    console.log(result.data.data.balance);
-}).catch((err) => {
-    console.log(err);
-})
+let str = '!challenge @bomm     100000';
+let arr = str.match(/\S+/g);
+for(i = 0; i < arr.length; i++){
+    console.log(i + ' ' + arr[i]);
+}
