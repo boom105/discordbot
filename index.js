@@ -512,7 +512,7 @@ bot.on('message', message=> {
                                 '\n1. !flip : tung đồng xu, winrate: 1/2, thưởng - phạt: 50 - 0, requirement: 0 points ' + 
                                 '\n2. !roulette: Cò quay nga, winrate: 4/6, thưởng - phạt: 300 - 1000, requirement: 1000 points'+ 
                                 '\n3. !moneyheist: Cướp ngân hàng, winrate: 1/100, thưởng - phạt: 20000 - 200, bonus 01 phần quà từ Big Boss, requirement: 200 points' + 
-                                '\n4. !challenge @member số_points để thách đấu / !challenge -accecpt @người_thách_đấu để xác nhận lời thách đấu '+
+                                '\n4. !challenge @member số_points để thách đấu / !challenge -accecpt @người_thách_đấu để xác nhận lời thách đấu / !challenge -cancel'+
                                 '\n5. !lottery nhà_mạng: Tích đủ 50k points thì được thử vận may một lần, winrate: 1/3, thưởng-phạt: card(10) - 50k points'+
                                 '\n/---------------------Extension------------------------/'+
                                 '\n1. !kqxs: Lấy lết quả xổ số ngày gần đây nhất' + 
@@ -530,7 +530,9 @@ bot.on('message', message=> {
                                 '\n1. Giờ các lệnh chơi game chỉ dùng được trong #gamecenter ngoại trừ 02 lệnh !challenge' +
                                 '\n2. Tăng winrate của !moneyhesit lên thành 1/100, thưởng-phạt points giữ nguyên'+
                                 '\n3. Cập nhật thêm lệnh !lottery và !kqxs.' + 
-                                '\n4. Giờ slowmode của #gamecenter đã lên 15s')
+                                '\n4. Giờ slowmode của #gamecenter đã lên 15s' + 
+                                '-----------------------------------------------' +
+                                '1.Thêm command: !challenge -cancel để hủy thách đấu!');
             break;
         }
         
