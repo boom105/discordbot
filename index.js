@@ -531,7 +531,7 @@ bot.on('message', message=> {
                                 '\n2. Tăng winrate của !moneyhesit lên thành 1/100, thưởng-phạt points giữ nguyên'+
                                 '\n3. Cập nhật thêm lệnh !lottery và !kqxs.' + 
                                 '\n4. Giờ slowmode của #gamecenter đã lên 15s' + 
-                                '-----------------------------------------------' +
+                                '\n-----------------------------------------------' +
                                 '\n1.Thêm command: !challenge -cancel để hủy thách đấu!');
             break;
         }
