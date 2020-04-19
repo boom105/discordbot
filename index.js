@@ -233,7 +233,7 @@ bot.on('message', message=> {
 
           else if(args[1] == '-cancel'){//Cancel Challenge
             if(userMap.has(ID)){
-              message.reply('Bạn đã hủy lời thách đấu với ' + userMap.get(ID).opponent);
+              message.reply('Bạn đã hủy lời thách đấu với ' + userMap.get(ID).opname);
               userMap.delete(ID);             
             }
             else{
@@ -266,6 +266,7 @@ bot.on('message', message=> {
                       userMap.set(ID,{
                         username: author,
                         opponent: op.id,
+                        opname : op.username,
                         amount: args[2]
                       })
             
