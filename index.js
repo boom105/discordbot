@@ -154,7 +154,7 @@ bot.on('message', message=> {
             break;
         }
 
-        case 'avatar': {
+        case 'avatar': {//Xem avatar
             if(!args[1]){
                 var user = message.author;
                 if(!user.avatarURL){
@@ -211,15 +211,14 @@ bot.on('message', message=> {
                         db.update({userID: op.id},{$inc: {points: -challenger.amount}},{},(err)=>{})
     
                         message.reply('Bạn vừa thắng cược ' + challenger.amount + ' points sau cuộc đấu súng đẫm máu với ' + challenger.username + '!!!!');
-                        message.channel.send('Này ' + `<@!${op.id}>` + '! Gửi lời hỏi thăm sức khỏe tới Howard Roark hộ tôi nhé! Cảm ơn!\n Quên!Bạn vừa bị trừ ' + challenger.amount + ' points nữa nhé');
+                        message.channel.send('Này ' + `<@!${op.id}>` + '! Dưới Suối vàng, Gửi lời hỏi thăm sức khỏe tới Howard Roark hộ tôi nhé! Cảm ơn!\n Quên!Bạn vừa bị trừ ' + challenger.amount + ' points nữa nhé');
                       }
                       else{
                         db.update({userID: op.id},{$inc: {points: challenger.amount}},{},(err)=>{})
                         db.update({userID: ID},{$inc: {points: -challenger.amount}},{},(err)=>{})
     
                         message.channel.send('Chúc mừng ' + `<@!${op.id}>` +'! Bạn vừa thắng cược ' + challenger.amount + ' sau cuộc đấu súng đẫm máu với ' + challenger.username + '!!!!');               
-                        message.reply('Này ' + author + '! Dưới âm phủ, gửi lời hỏi thăm sức khỏe tới Howard Roark hộ tôi nhé! Cảm ơn!\nQuên!Bạn vừa bị trừ ' + challenger.amount + ' points nữa nhé');
-    
+                        message.reply('Này ' + author + '! Dưới Suối vàng, gửi lời hỏi thăm sức khỏe tới Howard Roark hộ tôi nhé! Cảm ơn!\nQuên!Bạn vừa bị trừ ' + challenger.amount + ' points nữa nhé');   
                         
                       }
                     }
@@ -231,10 +230,24 @@ bot.on('message', message=> {
               
             }
           }
-          else{
+
+          else if(args[1] == '-cancel'){//Cancel Challenge
+            if(userMap.has(ID)){
+              message.reply('Bạn đã hủy lời thách đấu với ' + userMap.get(ID).opponent);
+              userMap.delete(ID);             
+            }
+            else{
+              message.reply('Bạn chưa thách đấu với ai cả!');
+            }
+          }
+
+          else{//
             var op = message.mentions.users.first();
             if(!op){
               message.channel.send('Command: !challenge @member số_points / !challenge -accept @member !');
+            }
+            else if(op.id == ID){
+                return message.reply('Bạn không thể tự thách đấu bản thân!')
             }
             else{
               if(!Number.isInteger(parseInt(args[2])) || Number.isInteger(parseInt(args[2])) < 0){
@@ -510,7 +523,7 @@ bot.on('message', message=> {
                                 '\n @@ Bạn đồng ý tham gia là phải đồng ý các điều khoản trên. Bạn sẽ tham gia chứ?' +
                                 '\n/---------------------Update Note Ver: 0.0.2-------' + 
                                 '\n1. Giờ các lệnh chơi game chỉ dùng được trong #gamecenter ngoại trừ 02 lệnh !challenge' +
-                                '\n2. Tăng winrate lên thành 1/100, thưởng-phạt points giữ nguyên'+
+                                '\n2. Tăng winrate của !moneyhesit lên thành 1/100, thưởng-phạt points giữ nguyên'+
                                 '\n3. Cập nhật thêm lệnh !lottery và !kqxs.' + 
                                 '\n4. Giờ slowmode của #gamecenter đã lên 15s')
             break;
