@@ -291,7 +291,7 @@ bot.on('message', message=> {
           }
 
           case 'flip': {
-              if(1){
+              if(allow){
                 let ran = random.int(1,2);
                 if(ran == 1){
                     db.update({userID: ID},{$inc: {points:50}}, {upsert:false},function(err,number){              
