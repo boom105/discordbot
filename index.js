@@ -17,6 +17,8 @@ db.loadDatabase();
 
 var userMap = new Map();
 
+var guild;
+
 
 bot.on('ready',() => {
     console.log('This bot is online!');
@@ -42,7 +44,7 @@ bot.on('ready',() => {
 })
 
 bot.on('guildMemberAdd', member => {
-    const channel = member.guild.channels.cache.find(ch => ch.name === 'chung');
+    var channel = member.guild.channels.cache.find(ch => ch.name === 'chung');
 
     if(!channel) return;
     channel.send(`Chào mừng ${member} đến với server của bọn mình.\nVuốt sang trái, vào kênh voice Chung để vô voice chat bạn nhé!`);
@@ -61,8 +63,9 @@ bot.on('guildMemberAdd', member => {
     })
 })
 
-bot.on('guildMemberRemove',member => {
-  db.remove({userID: member.id},{},(err)=>{});
+bot.on('guildMemberRemove', member => {
+  db.remove({userID: member.user.id},{},(err)=>{});
+
 })
 
 bot.on('message', message=> {
