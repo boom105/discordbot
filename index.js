@@ -2,13 +2,16 @@ const { Client, MessageEmbed, RichEmbed } = require('discord.js');
 const Parser = require('rss-parser');
 const random = require('random')
 const API = require('./BaokimAPI')
+const { DateTime} = require('luxon');
 const Datastore = require('nedb')
+const {generateText,generateValue} = require('./generateText');
 
 const token = process.env.BOT_TOKEN;
 
 const bot = new Client();
 const PREFIX = '!';
 
+let dt = DateTime.local();
 let parser = new Parser();
 let arr = [];
 
@@ -16,8 +19,14 @@ var db = new Datastore({filename: './gamedata'});
 db.loadDatabase();
 
 var userMap = new Map();
+let gambleMap = new Map();
 
 var guild;
+
+//Check time to place new bet
+function checkTime(){
+  return (dt.hour > 8 && dt.hour < 18) ? true : false;
+}
 
 
 bot.on('ready',() => {
@@ -44,10 +53,15 @@ bot.on('ready',() => {
 })
 
 bot.on('guildMemberAdd', member => {
-    var channel = member.guild.channels.cache.find(ch => ch.name === 'chung');
+    var channel = member.guild.channels.cache.find(ch => ch.id === '696736564235206848');
 
     if(!channel) return;
     channel.send(`Chào mừng ${member} đến với server của bọn mình.\nVuốt sang trái, vào kênh voice Chung để vô voice chat bạn nhé!`);
+
+    var role = member.guild.roles.cache.find(role => role.name == 'member');
+    if(!role) return;
+
+    member.roles.add(role);
 
     var newmem = {"userID": member.user.id, "username": member.user.username,"points" : 0};
     db.find({userID: newmem.userID},function(err,doc){
@@ -63,10 +77,7 @@ bot.on('guildMemberAdd', member => {
     })
 })
 
-bot.on('guildMemberRemove', member => {
-  db.remove({userID: member.user.id},{},(err)=>{});
 
-})
 
 bot.on('message', message=> {
 
@@ -74,6 +85,7 @@ bot.on('message', message=> {
     var author = message.author.username;
     if (message.content.startsWith(PREFIX)) {
       let args = message.content.substring(PREFIX.length).match(/\S+/g);
+      if(args.length > 3) return message.reply('Sai cú pháp. Xem !game hoặc !gamble để xem các lệnh');
       var allow = 0;
       if(message.channel.id == '700715951532015704'){
         allow = 1;
@@ -101,10 +113,7 @@ bot.on('message', message=> {
                       //message.channel.send(memlist);
                       let num = random.int(0,memlist.length-1);
                       luckymember = memlist[num];
-                      // console.log(num);
-                      // console.log("Number: " + memlist.length)
-                      // console.log("lucky member: " + memlist[num].username);
-                      // //console.log(memlist.forEach(mem => console.log(mem)));
+                     
                   }
                   else{
                       luckymember = message.mentions.users.first();
@@ -161,6 +170,7 @@ bot.on('message', message=> {
               break;
           }
 
+          /*----------------------------------------------------------- */
           case 'avatar': {//Xem avatar
               if(!args[1]){
                   var user = message.author;
@@ -191,6 +201,7 @@ bot.on('message', message=> {
               }
           }
 
+          /*----------------------------------------------------------- */
           case 'challenge': {
             if(args[1] == '-accept'){
               var op = message.mentions.users.first();
@@ -290,6 +301,7 @@ bot.on('message', message=> {
             break;
           }
 
+          /*-----------------------------------------------------------*/
           case 'flip': {
               if(allow){
                 let ran = random.int(1,2);
@@ -309,6 +321,7 @@ bot.on('message', message=> {
               break;
           }
       
+          /*----------------------------------------------------------- */
           case 'roulette': {
             if (allow) {
               db.find({userID: ID},function(err,doc){
@@ -336,6 +349,8 @@ bot.on('message', message=> {
             break;
           }
       
+
+          /*----------------------------------------------------------- */
           case 'moneyheist':{
             if (allow) {
               db.find({userID: ID}, function(err,doc){
@@ -361,6 +376,7 @@ bot.on('message', message=> {
             break;
           }
       
+          /*----------------------------------------------------------- */
           case 'points': {
             if(!args[1]){
               db.find({userID: ID},function(err,doc){
@@ -371,7 +387,7 @@ bot.on('message', message=> {
               var text = '';
               db.find({}).sort({points: -1}).exec(function(err,doc){
                   text += '------------TOP 10------------\n' ;
-                for(i = 0; i <10; i++){
+                for(i = 0; i < 10; i++){
                   text += doc[i].username + ' has ' + doc[i].points + ' points\n'
                     
                 }
@@ -380,14 +396,28 @@ bot.on('message', message=> {
                   
             })
             }
+            else if(args[1] == '-all'){
+              var text = '';
+              db.find({}).sort({points: -1}).exec((err,doc) => {
+                text += '-----------List-------------------\n';
+                for(i = 0; i < doc.length; i++)
+                {
+                  text += doc[i].username + ' has ' + doc[i].points + ' points\n';
+                }
+
+                text += '-----------------------------------';
+                message.channel.send(text);
+              })
+            }
             break;
           }
       
+          /*----------------------------------------------------------- */
           case 'lottery':{
             if (allow) {
               db.find({userID: ID}, function(err,doc){
-                if(doc[0].points < 50000){
-                  message.reply('Xin lỗi! Bạn phải có trên 50000 points để chơi trò này')
+                if(doc[0].points < 30000){
+                  message.reply('Xin lỗi! Bạn phải có trên 30000 points để chơi trò này')
                 }
                 else{
                   if(!args[1]){
@@ -416,8 +446,8 @@ bot.on('message', message=> {
                       });
                       }
                       else{
-                        message.reply('Bạn Xịt mất 50000 points là do bạn không chơi đồ đấy bạn ạ =))')
-                        db.update({userID: ID}, {$inc: {point: -50000}},{},(err,num)=>{})
+                        message.reply('Bạn Xịt mất 30000 points là do bạn không chơi đồ đấy bạn ạ =))')
+                        db.update({userID: ID}, {$inc: {point: -30000}},{},(err,num)=>{})
                       }
                     }
                   }
@@ -430,6 +460,379 @@ bot.on('message', message=> {
             break;
           }
 
+
+
+          /*----------------------------------------------------------- */
+          case 'lsd':{
+            if(checkTime()){
+              var gambleInfo;
+            let lsd = [];
+            var text = ' ';
+            var point = 0;
+            var count = 0;
+            if(args.length < 2){
+              return message.reply('Command: Ví dụ: !lsd 12 1000 : để đánh 1000 points lô con 12\n!lsd 12,13,14 1000 : để đánh 1000 ptns lô mỗi con');
+            }
+            else{
+              if(!Number.isInteger(parseInt(args[2],10)) || parseInt(args[2]) < 0){
+                return message.reply('Số points cược phải là số tự nhiên')
+              }
+              else{
+                if(!gambleMap.has(ID)){//Nếu chưa ghi nhận lần cược nào trong hôm nay thì tạo gambleInfo mới
+                  if(args[1].includes(',')){
+                    var temp = args[1].split(',');
+                    
+                    for(i = 0; i < temp.length; i++){
+                      if(!Number.isInteger(parseInt(temp[i],10)) || parseInt(temp[i],10) < 0 || parseInt(temp[i],10) > 99){
+                        text += '\n'+temp[i] + ' không phải số thuộc 00-99. Bỏ qua số này';
+                        continue;
+                      }
+                      else{
+                        var obj = [temp[i],parseInt(args[2],10)];
+                        lsd.push(obj);                 
+                        text += '\nBạn vừa ghi lô '+ temp[i] + ' : ' + args[2] + 'points';
+                        count++;
+                      }
+                    }
+      
+                    point = count * parseInt(args[2],10);                          
+                  }
+      
+                  else{
+                    if(!Number.isInteger(parseInt(args[1],10)) || parseInt(args[1],10) < 0 || parseInt(args[1],10) > 99){
+                      text += args[1] + ' không phải số từ 00 - 99. Đã hủy lệnh!\n';
+                    }
+                    else{
+                      var obj = [args[1], args[2]];
+                      lsd.push(obj);
+                      text += '\nBạn vừa ghi lô ' + args[1] + ' : ' + args[2] + 'points';
+                    }
+                    
+                    point = parseInt(args[2],10);
+      
+                  }
+      
+                  db.find({userID:ID},(err,doc)=>{
+                    if(doc[0].points < point){
+                      return message.reply('Bạn không đủ'+ point +' points để cược') 
+                    }
+                    else{
+                      db.update({userID: ID}, {$inc: {points: -point}},{},err=>{return});
+                      message.reply(text);
+                      gambleMap.set(ID,{//Tạo mới gamble info
+                        LSD: lsd,
+                        DMT : [],
+                        checkout: 0
+                      })
+                    }
+                  })
+                 
+                }
+      
+                else{//Update thêm lệnh cược
+                  gambleInfo = gambleMap.get(ID);
+                  if(args[1].includes(',')){
+                    var temp = args[1].split(',');
+                    for(i = 0; i < temp.length; i++){
+                      if(!Number.isInteger(parseInt(temp[i],10)) || parseInt(temp[i],10) < 0 || parseInt(temp[i],10) > 99){
+                        text += '\n' + temp[i] + ' không phải số thuộc [00-99]. Bỏ qua số này';
+                        continue;
+                      }
+                      else{
+                        var obj = [temp[i],args[2]];
+                        gambleInfo.LSD.push(obj);                 
+                        text += '\nBạn vừa ghi lô '+ temp[i] + ' : ' + args[2] + 'points';
+                        count++;
+                      }
+                    }
+      
+                    point = count * parseInt(args[2],10);
+                    //message.reply(text);
+                  }
+                  else{
+                    if(!Number.isInteger(parseInt(args[1],10)) || parseInt(args[1],10) < 0 || parseInt(args[1],10) > 99){
+                      text += args[1] + ' không phải số từ 00 - 99. Đã hủy lệnh!';
+                    }
+                    else{
+                      var obj = [args[1], args[2]];
+                      gambleInfo.LSD.push(obj);
+                      text += '\nBạn vừa ghi lô '+ args[1] + ' : ' + args[2] + 'points';
+                    }
+                    point = parseInt(args[2],10);
+                    //message.reply(text);            
+                  }
+      
+                  db.find({userID: ID}, (err,doc) => {
+                    if(doc[0].points < point){
+                      return message.reply('Bạn không đủ '+ point +' points để cược')
+                    }
+                    else{
+                      db.update({userID: ID},{$inc: {points: -point}},{},err=>{return})
+                      gambleMap.delete(ID);
+                      gambleMap.set(ID,gambleInfo);
+                      message.reply(text);
+                    }
+                  })
+      
+                }
+              }
+            }      
+            }
+            else{
+              message.reply('Bạn chỉ có thể thêm cược mới từ 08 giờ đến 18 giờ hàng ngày!');
+            }
+            break;
+          }    
+      
+
+          /*----------------------------------------------------------- */
+          case 'dmt':{
+            if(1){
+              let gambleInfo;
+            let dmt = [];
+            let text = ' ';
+            let point = 0;
+            let count = 0;
+            if(args.length < 2){
+              return message.reply('Command: Ví dụ: !dmt 12 1000 : để đánh 1000 points đề con 12\n!dmt 12,13,14 1000 : để đánh 1000 ptns đề mỗi con 12,13,14');
+            }
+            else{
+              if(!Number.isInteger(parseInt(args[2],10)) || parseInt(args[2]) < 0){
+                return message.reply('Số points cược phải là số tự nhiên')
+              }
+              else{
+                if(!gambleMap.has(ID)){//Nếu chưa ghi nhận lần cược nào trong hôm nay thì tạo gambleInfo mới
+                  if(args[1].includes(',')){
+                    var temp = args[1].split(',');
+                    
+                    for(i = 0; i < temp.length; i++){
+                      if(!Number.isInteger(parseInt(temp[i],10)) || parseInt(temp[i],10) < 0 || parseInt(temp[i],10) > 99){
+                        text += '\n'+ temp[i] + ' không phải số thuộc 00-99. Bỏ qua số này';
+                        continue;
+                      }
+                      else{
+                        var obj = [temp[i],args[2]];
+                        dmt.push(obj);                 
+                        text += '\nBạn vừa ghi đề '+ temp[i] + ' : ' + args[2] + 'points';
+                        count++;
+                      }
+                    }
+                    
+                    point = count * parseInt(args[2],10);
+      
+                  }
+                  else{
+                    if(!Number.isInteger(parseInt(args[1],10)) || parseInt(args[1],10) < 0 || parseInt(args[1],10) > 99){
+                      text += args[1] + ' không phải số từ 00 - 99. Đã hủy lệnh!';
+                    }
+                    else{
+                      var obj = [args[1], args[2]];
+                      dmt.push(obj);
+                      text += 'Bạn vừa ghi đề ' + args[1] + ' : ' + args[2] + 'points';
+                    }
+                    
+                    point = parseInt(args[2],10);
+                  }
+      
+                  
+                  db.find({userID:ID},(err,doc)=>{
+                    if(doc[0].points < point){
+                      return message.reply('Bạn không đủ '+ point +' points để cược') 
+                    }
+                    else{
+                      db.update({userID: ID}, {$inc: {points: -point}},{},err=>{return});
+                      message.reply(text);
+                      gambleMap.set(ID,{//Tạo mới gamble info
+                        LSD: [],
+                        DMT : dmt,
+                        checkout: 0
+                      })
+                    }
+                  })
+                }
+      
+                else{//Update thêm lệnh cược
+                  gambleInfo = gambleMap.get(ID);
+                  if(args[1].includes(',')){
+                    var temp = args[1].split(',');
+                    for(i = 0; i < temp.length; i++){
+                      if(!Number.isInteger(parseInt(temp[i],10)) || parseInt(temp[i],10) < 0 || parseInt(temp[i],10) > 99){
+                        text += '\n' + temp[i] + ' không phải số thuộc [00-99]. Bỏ qua số này';
+                        continue;
+                      }
+                      else{
+                        var obj = [temp[i],args[2]];
+                        gambleInfo.DMT.push(obj);                 
+                        text += '\nBạn vừa ghi đề '+ temp[i] + ' : ' + args[2] + 'points';
+                        count++;
+                      }
+                    }
+                    
+                    point = count * parseInt(args[2],10);
+                  }
+                  else{
+                    if(!Number.isInteger(parseInt(args[1],10)) || parseInt(args[1],10) < 0 || parseInt(args[1],10) > 99){
+                      text += args[1] + ' không phải số từ 00 - 99. Đã hủy lệnh!';
+                    }
+                    else{
+                      var obj = [args[1], args[2]];
+                      gambleInfo.DMT.push(obj);
+                      text += '\nBạn vừa ghi đề '+ args[1] + ' : ' + args[2] + 'points';
+                    }
+      
+                    point = parseInt(args[2],10);            
+                  }
+      
+                  db.find({userID:ID},(err,doc)=>{//kiểm tra liệu có đủ tiền cược
+                    if(doc[0].points < point){// không đủ thì báo lỗi
+                      return message.reply('Bạn không đủ '+ point +' points để cược') 
+                    }
+                    else{// đủ thì trừ tiền và báo thành công
+                      db.update({userID: ID}, {$inc: {points: -point}},{},err=>{return});
+                      message.reply(text);
+                      gambleMap.delete(ID);
+                      gambleMap.set(ID,gambleInfo);
+                    }
+                  })
+                 
+                }
+              }
+            }
+            }
+            else{
+              message.reply('Bạn chỉ có thể thêm cược mới từ 08 giờ đến 18 giờ hàng ngày!');
+            }
+            
+            break;
+          }  
+      
+
+          /*----------------------------------------------------------- */
+          case 'mylog': {
+            if(!gambleMap.has(ID)){
+              return message.reply('Bạn chưa đặt cược ngày hôm nay');
+            }
+            else{
+              var text = '';
+              var info = gambleMap.get(ID);
+              if(info.LSD.length == 0 && info.DMT.length == 0){
+                return message.reply('Bạn chưa đặt cược ngày hôm nay');
+              }
+              else{
+                text += 'Ngày ' + dt.day + '/' + dt.month + '/' + dt.year + '\n';
+                if(info.DMT.length != 0){
+                  text += 'Đề: ';
+                  info.DMT.forEach(d => {text += d[0] + ' - ' + d[1] +'; '})
+                }
+                if(info.LSD.length != 0){
+                  text += '\nLô: ';
+                    info.LSD.forEach(l => {text += l[0] + ' - ' + l[1] + '; '});
+                }
+                message.reply(text);
+                }
+              }
+              break;
+          }
+           
+          
+          /*----------------------------------------------------------- */
+          case 'checkout':{
+            if(!gambleMap.has(ID)){
+              message.reply('Bạn chưa đặt cược cho ngày hôm nay!');
+            }
+            else
+            {
+              let gambleInfo = gambleMap.get(ID);
+              let lsd = gambleInfo.LSD;
+              let dmt = gambleInfo.DMT;
+              var content = [];
+              var Lcontent = [];
+              var Dcontent = [];
+              var Lmsg = '';
+              var bonusvalue = 0;
+      
+              parser.parseURL('https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss',(err,feed)=>{
+                if(err) throw err;
+                var title = feed.items[0].title;
+                      if(dt.hour > 19){
+                        var result = feed.items[0].content.split('\n').forEach(m => {
+                          var temp = m.split(' ')
+                          temp.splice(0,1);
+                          temp.forEach(m => {
+                              if (Number.isInteger(parseInt(m,10))) {
+                                  content.push(m);
+                              }
+                          })
+                          
+                        })
+                      
+                        for(i = 0; i < content.length; i ++)
+                        {
+                          Lcontent.push(content[i]%100);
+                        }
+      
+                        //Soi Đề
+                        for(i = 0; i < dmt.length; i++)
+                        {
+                          var win = 0;
+                          if(parseInt(dmt[i][0]) == Lcontent[0])
+                          {
+                            win = 1;
+                            Lmsg += 'Đề: ' + dmt[i][0] + '-' + dmt[i][1] + ' points - Trúng\n' + 
+                                    'Bạn được cộng ' + 70*parseInt(dmt[i][1],10) + ' points vào quỹ điểm!!\n';
+                            bonusvalue += 70*parseInt(dmt[i][1],10);
+                            break;
+                          }
+                          else{
+                            Lmsg += 'Đề: ' + dmt[i][0] + '-' + dmt[i][1] + ' points - Xịt\n';
+                          }                  
+                        }
+                        
+      
+                        //Soi Lô
+                        for(i = 0; i < lsd.length; i++)
+                        {
+                          var count = 0;
+                          var num = parseInt(lsd[i][0],10);
+                          var value = parseInt(lsd[i][1],10);
+                          for(j = 0; j < Lcontent.length; j++)
+                          {
+                            if(num == Lcontent[j])
+                            {
+                              count++;
+                            }
+                          }
+                          if(count == 0){
+                            Lmsg += 'Lô '+num + '-' + value +' Xịt!!!\n'
+                          }
+                          else if(count > 0 && count < 7)
+                          {
+                            Lmsg += generateText(count,num,value);
+                            bonusvalue += generateValue(count,value);
+                          }
+                          else{
+                            Lmsg += 'Lô về nhiều hơn 6 nháy. Hãy nhờ Admin cộng thủ công bằng tay' 
+                          }
+                        }
+      
+                        db.update({userID: ID},{$inc: {points: bonusvalue}},{},err=>{});
+                        gambleMap.delete(ID);
+                        message.reply(Lmsg);
+                      
+                      }
+                      else{
+                        return message.reply('Chưa có: ' + title);
+                      }
+              })
+                    
+                    
+              
+            }
+            break;
+          }
+
+
+          /*----------------------------------------------------------- */
           case 'give': {
             if(ID != '650581972560904202'){
               return message.reply('Sorry! You do not have permission to do this!');
@@ -468,6 +871,8 @@ bot.on('message', message=> {
             break;
           }
       
+
+          /*----------------------------------------------------------- */
           case 'resetpoint':{
             if (ID != '650581972560904202') {
               return message.reply('Sorry! You do not have permission to do this!');
@@ -481,6 +886,8 @@ bot.on('message', message=> {
             break;
           }
       
+
+          /*----------------------------------------------------------- */
           case 'setpoint':{
             if (ID != '650581972560904202') {
               return message.reply('Sorry! You do not have permission to do this!');
@@ -490,7 +897,7 @@ bot.on('message', message=> {
               if(!mem){
                 message.reply('Command: !setpoint @member số_point')
               }
-              if(!Number.isInteger(parseInt(args[2].trim(),10))){
+              if(!Number.isInteger(parseInt(args[2],10))){
                 return message.reply('Số points phải là số tự nhiên!');
               }
               else{
@@ -504,6 +911,7 @@ bot.on('message', message=> {
           }
       
 
+          /*------------------------------------------------------------*/
           case 'kqxs':{
             parser.parseURL('https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss')
                   .then(output => {
@@ -513,43 +921,37 @@ bot.on('message', message=> {
                   })
             break;
           }
+
+
+          /*------------------------------------------------------------*/
           case 'game': {
-            message.channel.send('GameCenter commands list:\n' + 
-                                  '/------------------- ---GAME LIST --------------------------/' +
-                                  '\n1. !flip : tung đồng xu, winrate: 1/2, thưởng - phạt: 50 - 0, requirement: 0 points ' + 
-                                  '\n2. !roulette: Cò quay nga, winrate: 4/6, thưởng - phạt: 300 - 1000, requirement: 1000 points'+ 
-                                  '\n3. !moneyheist: Cướp ngân hàng, winrate: 1/100, thưởng - phạt: 20000 - 200, bonus 01 phần quà từ Big Boss, requirement: 200 points' + 
-                                  '\n4. !challenge @member số_points để thách đấu / !challenge -accecpt @người_thách_đấu để xác nhận lời thách đấu / !challenge -cancel'+
-                                  '\n5. !lottery nhà_mạng: Tích đủ 50k points thì được thử vận may một lần, winrate: 1/3, thưởng-phạt: card(10) - 50k points'+
-                                  '\n/---------------------Extension------------------------/'+
-                                  '\n1. !kqxs: Lấy lết quả xổ số ngày gần đây nhất' + 
-                                  '\n2. !avatar hoặc !avatar @member:  Xem avatar của bản thân hoặc thành viên khác'+
-                                  '\n/------------------ --PLAYER INFO -------------------------/' + 
-                                  '\n 1. !points : Kiểm tra số points hiện có' +
-                                  '\n2. !points -top: Để xem bảng top tài phú ' +
-                                  '\n3. Đang suy nghĩ thêm!' + 
-                                  '\n/-------------------- RULE -------------------------------/' +
-                                  '\n @@ Mỗi mùng 1 hàng tháng sẽ tổng kết số points 1 lần, ai nhiều points nhất sẽ được: ' + 
-                                  '\n1. 01 card 100k từ BOSS ' +
-                                  '\n2. Mỗi thành viên sẽ phải tặng người thắng 01 món quà (VD: card, hát tặng 01 bài, ảnh chân dung,... ) Tùy thỏa thuận giữa Winner và thành viên)' +
-                                  '\n @@ Bạn đồng ý tham gia là phải đồng ý các điều khoản trên. Bạn sẽ tham gia chứ?' +
-                                  '\n/---------------------Update Note Ver: 0.0.2-------' + 
-                                  '\n1. Giờ các lệnh chơi game chỉ dùng được trong #gamecenter ngoại trừ 02 lệnh !challenge' +
-                                  '\n2. Tăng winrate của !moneyhesit lên thành 1/100, thưởng-phạt points giữ nguyên'+
-                                  '\n3. Cập nhật thêm lệnh !lottery và !kqxs.' + 
-                                  '\n4. Giờ slowmode của #gamecenter đã lên 15s' + 
-                                  '\n-----------------------------------------------' +
-                                  '\n1.Thêm command: !challenge -cancel để hủy thách đấu!');
+            message.channel.send('----------------------GAMECENTER COMMANDS LIST-----------------' +
+                                  '1. !flip          require: 0, wr: 1/2, w-l: 50-0\n'+
+                                  '2. !roulette      require: 1000, wr: 4/6, w-l: 300-1000\n'+
+                                  '3. !moneyheist    require: 200, wr: 1/100, w-l: 20000-200 (**)\n'+
+                                  '4. !challenge @member số_point / challenge -accept @member / !challenge -cancel' +
+                                  '5. !lottery nhà_mạng          require: 30000, wr:1/3, w-l: card(10) - 30000ptns\n' +
+                                  '--------------------------------------------------------------\n');
               break;
           }
           
         
+          case 'gamble':{
+            message.channel.send('--------------------GAMBLE COMMANDS LIST------------------------'+
+                                  '1. !dmt number(s) số_point: Ghi Đề. (x70)\n' +
+                                  '2. !lsd number(s) số_points: Ghi Lô.(về 1x3, 2x10, 3x40, 4x100, 5x200)\n'+
+                                  '3. !mylog : Xem mình đang ghi những con nào\n'+
+                                  '4. !checkout: Sau  19h hàng ngày dùng lệnh này để nhận points nếu đánh trúng,\n '+
+                                  'tới 02 giờ sáng ngày kế tiếp mà chưa !checkout thì bị xóa khỏi hàng đợi, coi như mất luôn\n'+
+                                  '---------------------------------------------------------------\n' +
+                                  'Note: 1. Chỉ ghi được lô và đề trong khoảng từ 08h sáng tới 18h chiều mỗi ngày'+
+                                  '---------------------------------------------------------------')
+            break;
+          }
 
+          /*------------------------------------------------------------*/
           case 'command':{
-              message.channel.send("Command List: \n1. !card @member nhà_mạng or !card -random nhà_mạng {viettel, vina, mobi}" +
-                                                  "\n2. !avatar hoặc !avatar @member" +
-                                                  "\n3. !balance" +
-                                                  "\n4. Đang phát triển thêm=))");
+              message.channel.send("");
                                                   
               break;
           }
