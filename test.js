@@ -1,8 +1,10 @@
 
-const Datastore = require('nedb');
+const {DateTime} = require('luxon');
 
-var db = new Datastore('./gamedata');
+var dt = DateTime.local();
 
-db.loadDatabase();
+function checkTime(){
+    return (dt.hour > 8 && dt.hour < 18) ? true : false;
+  }
 
-db.remove({userID: '700601536979664946'},{},err => {});
+console.log(checkTime());

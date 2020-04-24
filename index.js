@@ -466,117 +466,117 @@ bot.on('message', message=> {
           case 'lsd':{
             if(checkTime()){
               var gambleInfo;
-            let lsd = [];
-            var text = ' ';
-            var point = 0;
-            var count = 0;
-            if(args.length < 2){
-              return message.reply('Command: Ví dụ: !lsd 12 1000 : để đánh 1000 points lô con 12\n!lsd 12,13,14 1000 : để đánh 1000 ptns lô mỗi con');
-            }
-            else{
-              if(!Number.isInteger(parseInt(args[2],10)) || parseInt(args[2]) < 0){
-                return message.reply('Số points cược phải là số tự nhiên')
+              let lsd = [];
+              var text = ' ';
+              var point = 0;
+              var count = 0;
+              if(args.length < 2){
+                return message.reply('Command: Ví dụ: !lsd 12 1000 : để đánh 1000 points lô con 12\n!lsd 12,13,14 1000 : để đánh 1000 ptns lô mỗi con');
               }
               else{
-                if(!gambleMap.has(ID)){//Nếu chưa ghi nhận lần cược nào trong hôm nay thì tạo gambleInfo mới
-                  if(args[1].includes(',')){
-                    var temp = args[1].split(',');
-                    
-                    for(i = 0; i < temp.length; i++){
-                      if(!Number.isInteger(parseInt(temp[i],10)) || parseInt(temp[i],10) < 0 || parseInt(temp[i],10) > 99){
-                        text += '\n'+temp[i] + ' không phải số thuộc 00-99. Bỏ qua số này';
-                        continue;
+                if(!Number.isInteger(parseInt(args[2],10)) || parseInt(args[2]) < 0){
+                  return message.reply('Số points cược phải là số tự nhiên')
+                }
+                else{
+                  if(!gambleMap.has(ID)){//Nếu chưa ghi nhận lần cược nào trong hôm nay thì tạo gambleInfo mới
+                    if(args[1].includes(',')){
+                      var temp = args[1].split(',');
+                      
+                      for(i = 0; i < temp.length; i++){
+                        if(!Number.isInteger(parseInt(temp[i],10)) || parseInt(temp[i],10) < 0 || parseInt(temp[i],10) > 99){
+                          text += '\n'+temp[i] + ' không phải số thuộc 00-99. Bỏ qua số này';
+                          continue;
+                        }
+                        else{
+                          var obj = [temp[i],parseInt(args[2],10)];
+                          lsd.push(obj);                 
+                          text += '\nBạn vừa ghi lô '+ temp[i] + ' : ' + args[2] + 'points';
+                          count++;
+                        }
+                      }
+        
+                      point = count * parseInt(args[2],10);                          
+                    }
+        
+                    else{
+                      if(!Number.isInteger(parseInt(args[1],10)) || parseInt(args[1],10) < 0 || parseInt(args[1],10) > 99){
+                        text += args[1] + ' không phải số từ 00 - 99. Đã hủy lệnh!\n';
                       }
                       else{
-                        var obj = [temp[i],parseInt(args[2],10)];
-                        lsd.push(obj);                 
-                        text += '\nBạn vừa ghi lô '+ temp[i] + ' : ' + args[2] + 'points';
-                        count++;
+                        var obj = [args[1], args[2]];
+                        lsd.push(obj);
+                        text += '\nBạn vừa ghi lô ' + args[1] + ' : ' + args[2] + 'points';
                       }
+                      
+                      point = parseInt(args[2],10);
+        
                     }
-      
-                    point = count * parseInt(args[2],10);                          
-                  }
-      
-                  else{
-                    if(!Number.isInteger(parseInt(args[1],10)) || parseInt(args[1],10) < 0 || parseInt(args[1],10) > 99){
-                      text += args[1] + ' không phải số từ 00 - 99. Đã hủy lệnh!\n';
-                    }
-                    else{
-                      var obj = [args[1], args[2]];
-                      lsd.push(obj);
-                      text += '\nBạn vừa ghi lô ' + args[1] + ' : ' + args[2] + 'points';
-                    }
-                    
-                    point = parseInt(args[2],10);
-      
-                  }
-      
-                  db.find({userID:ID},(err,doc)=>{
-                    if(doc[0].points < point){
-                      return message.reply('Bạn không đủ'+ point +' points để cược') 
-                    }
-                    else{
-                      db.update({userID: ID}, {$inc: {points: -point}},{},err=>{return});
-                      message.reply(text);
-                      gambleMap.set(ID,{//Tạo mới gamble info
-                        LSD: lsd,
-                        DMT : [],
-                        checkout: 0
-                      })
-                    }
-                  })
-                 
-                }
-      
-                else{//Update thêm lệnh cược
-                  gambleInfo = gambleMap.get(ID);
-                  if(args[1].includes(',')){
-                    var temp = args[1].split(',');
-                    for(i = 0; i < temp.length; i++){
-                      if(!Number.isInteger(parseInt(temp[i],10)) || parseInt(temp[i],10) < 0 || parseInt(temp[i],10) > 99){
-                        text += '\n' + temp[i] + ' không phải số thuộc [00-99]. Bỏ qua số này';
-                        continue;
+        
+                    db.find({userID:ID},(err,doc)=>{
+                      if(doc[0].points < point){
+                        return message.reply('Bạn không đủ'+ point +' points để cược') 
                       }
                       else{
-                        var obj = [temp[i],args[2]];
-                        gambleInfo.LSD.push(obj);                 
-                        text += '\nBạn vừa ghi lô '+ temp[i] + ' : ' + args[2] + 'points';
-                        count++;
+                        db.update({userID: ID}, {$inc: {points: -point}},{},err=>{return});
+                        message.reply(text);
+                        gambleMap.set(ID,{//Tạo mới gamble info
+                          LSD: lsd,
+                          DMT : [],
+                          checkout: 0
+                        })
                       }
-                    }
-      
-                    point = count * parseInt(args[2],10);
-                    //message.reply(text);
+                    })
+                  
                   }
-                  else{
-                    if(!Number.isInteger(parseInt(args[1],10)) || parseInt(args[1],10) < 0 || parseInt(args[1],10) > 99){
-                      text += args[1] + ' không phải số từ 00 - 99. Đã hủy lệnh!';
+        
+                  else{//Update thêm lệnh cược
+                    gambleInfo = gambleMap.get(ID);
+                    if(args[1].includes(',')){
+                      var temp = args[1].split(',');
+                      for(i = 0; i < temp.length; i++){
+                        if(!Number.isInteger(parseInt(temp[i],10)) || parseInt(temp[i],10) < 0 || parseInt(temp[i],10) > 99){
+                          text += '\n' + temp[i] + ' không phải số thuộc [00-99]. Bỏ qua số này';
+                          continue;
+                        }
+                        else{
+                          var obj = [temp[i],args[2]];
+                          gambleInfo.LSD.push(obj);                 
+                          text += '\nBạn vừa ghi lô '+ temp[i] + ' : ' + args[2] + 'points';
+                          count++;
+                        }
+                      }
+        
+                      point = count * parseInt(args[2],10);
+                      //message.reply(text);
                     }
                     else{
-                      var obj = [args[1], args[2]];
-                      gambleInfo.LSD.push(obj);
-                      text += '\nBạn vừa ghi lô '+ args[1] + ' : ' + args[2] + 'points';
+                      if(!Number.isInteger(parseInt(args[1],10)) || parseInt(args[1],10) < 0 || parseInt(args[1],10) > 99){
+                        text += args[1] + ' không phải số từ 00 - 99. Đã hủy lệnh!';
+                      }
+                      else{
+                        var obj = [args[1], args[2]];
+                        gambleInfo.LSD.push(obj);
+                        text += '\nBạn vừa ghi lô '+ args[1] + ' : ' + args[2] + 'points';
+                      }
+                      point = parseInt(args[2],10);
+                      //message.reply(text);            
                     }
-                    point = parseInt(args[2],10);
-                    //message.reply(text);            
+        
+                    db.find({userID: ID}, (err,doc) => {
+                      if(doc[0].points < point){
+                        return message.reply('Bạn không đủ '+ point +' points để cược')
+                      }
+                      else{
+                        db.update({userID: ID},{$inc: {points: -point}},{},err=>{return})
+                        gambleMap.delete(ID);
+                        gambleMap.set(ID,gambleInfo);
+                        message.reply(text);
+                      }
+                    })
+        
                   }
-      
-                  db.find({userID: ID}, (err,doc) => {
-                    if(doc[0].points < point){
-                      return message.reply('Bạn không đủ '+ point +' points để cược')
-                    }
-                    else{
-                      db.update({userID: ID},{$inc: {points: -point}},{},err=>{return})
-                      gambleMap.delete(ID);
-                      gambleMap.set(ID,gambleInfo);
-                      message.reply(text);
-                    }
-                  })
-      
                 }
-              }
-            }      
+              }      
             }
             else{
               message.reply('Bạn chỉ có thể thêm cược mới từ 08 giờ đến 18 giờ hàng ngày!');
