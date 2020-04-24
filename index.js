@@ -955,6 +955,11 @@ bot.on('message', message=> {
                                                   
               break;
           }
+
+          case 'time':{
+            message.reply(dt);
+            break;
+          }
     }
     } else {
       
