@@ -464,7 +464,7 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'lsd':{
-            if(dt.hour >= 8 && dt.hour <= 18){
+            if(dt.hour >= 1 && dt.hour <= 11){
               var gambleInfo;
               let lsd = [];
               var text = ' ';
@@ -587,7 +587,7 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'dmt':{
-            if(dt.hour >= 8 && dt.hour <= 18){
+            if(dt.hour + 7 >= 8 && dt.hour <= 11){
               let gambleInfo;
             let dmt = [];
             let text = ' ';
@@ -969,7 +969,7 @@ bot.on('message', message=> {
 })
 
 function resetGambleMap(){
-  if(dt.hour >= 0 && dt.hour <=1){
+  if(dt.hour >= 17 && dt.hour <=18){
     if(gambleMap.size > 0){
       
       var iterator = gambleMap.keys();
