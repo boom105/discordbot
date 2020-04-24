@@ -925,7 +925,7 @@ bot.on('message', message=> {
 
           /*------------------------------------------------------------*/
           case 'game': {
-            message.channel.send('----------------------GAMECENTER COMMANDS LIST-----------------' +
+            message.channel.send('----------------------GAMECENTER COMMANDS LIST-----------------\n' +
                                   '1. !flip          require: 0, wr: 1/2, w-l: 50-0\n'+
                                   '2. !roulette      require: 1000, wr: 4/6, w-l: 300-1000\n'+
                                   '3. !moneyheist    require: 200, wr: 1/100, w-l: 20000-200 (**)\n'+
@@ -937,14 +937,14 @@ bot.on('message', message=> {
           
         
           case 'gamble':{
-            message.channel.send('--------------------GAMBLE COMMANDS LIST------------------------'+
+            message.channel.send('--------------------GAMBLE COMMANDS LIST------------------------\n'+
                                   '1. !dmt number(s) số_point: Ghi Đề. (x70)\n' +
                                   '2. !lsd number(s) số_points: Ghi Lô.(về 1x3, 2x10, 3x40, 4x100, 5x200)\n'+
                                   '3. !mylog : Xem mình đang ghi những con nào\n'+
                                   '4. !checkout: Sau  19h hàng ngày dùng lệnh này để nhận points nếu đánh trúng,\n '+
                                   'tới 02 giờ sáng ngày kế tiếp mà chưa !checkout thì bị xóa khỏi hàng đợi, coi như mất luôn\n'+
                                   '---------------------------------------------------------------\n' +
-                                  'Note: 1. Chỉ ghi được lô và đề trong khoảng từ 08h sáng tới 18h chiều mỗi ngày'+
+                                  'Note: 1. Chỉ ghi được lô và đề trong khoảng từ 08h sáng tới 18h chiều mỗi ngày\n'+
                                   '---------------------------------------------------------------')
             break;
           }
