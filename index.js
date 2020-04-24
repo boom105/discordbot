@@ -587,7 +587,7 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'dmt':{
-            if(1){
+            if(checkTime()){
               let gambleInfo;
             let dmt = [];
             let text = ' ';
@@ -961,7 +961,26 @@ bot.on('message', message=> {
     }
     
     
-
-    
 })
+
+function resetGambleMap(){
+  if(dt.hour >= 0 && dt.hour <=1){
+    if(gambleMap.size > 0){
+      
+      var iterator = gambleMap.keys();
+      let memid = iterator.next();
+      while(!memid.done){
+        //var guild = bot.guilds.cache.get('650591236327079943');
+        var user = guild.members.cache.find(mem=> mem.user.id == memid.value);
+        user.send('Quá 0 giờ mà bạn chưa !checkout. Nên các giá trị bạn cược trong hôm qua đã bị xóa!');
+        memid = iterator.next();
+      }
+      gambleMap.clear(); 
+    }
+  }
+}
+
+
+setInterval(resetGambleMap,60*60*1000);
+
 bot.login(token);
