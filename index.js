@@ -25,7 +25,7 @@ var guild;
 
 //Check time to place new bet
 function checkTime(){
-  return (dt.hour > 8 && dt.hour < 18) ? true : false;
+  return (dt.hour >= 8 && dt.hour <= 18) ? true : false;
 }
 
 
@@ -464,7 +464,7 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'lsd':{
-            if(checkTime()){
+            if(dt.hour >= 8 && dt.hour <= 18){
               var gambleInfo;
               let lsd = [];
               var text = ' ';
@@ -587,7 +587,7 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'dmt':{
-            if(checkTime()){
+            if(dt.hour >= 8 && dt.hour <= 18){
               let gambleInfo;
             let dmt = [];
             let text = ' ';
