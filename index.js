@@ -2,7 +2,7 @@ const { Client, MessageEmbed, RichEmbed } = require('discord.js');
 const Parser = require('rss-parser');
 const random = require('random')
 const API = require('./BaokimAPI')
-const { DateTime} = require('luxon');
+const { DateTime } = require('luxon');
 const Datastore = require('nedb')
 const {generateText,generateValue} = require('./generateText');
 
@@ -957,7 +957,7 @@ bot.on('message', message=> {
           }
 
           case 'time':{
-            message.reply(dt);
+            message.reply(dt.hour);
             break;
           }
     }
