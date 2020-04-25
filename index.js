@@ -821,7 +821,7 @@ bot.on('message', message=> {
                       
                       }
                       else{
-                        return message.reply('Chưa có: ' + title);
+                        return message.reply('Chưa có kqxs ngày ' + dt.getDate() + '/' + dt.getMonth()+ '/' + dt.getFullYear());
                       }
               })
                     
