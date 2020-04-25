@@ -719,7 +719,7 @@ bot.on('message', message=> {
                 return message.reply('Bạn chưa đặt cược ngày hôm nay');
               }
               else{
-                text += 'Ngày ' + dt.day + '/' + dt.month + '/' + dt.year + '\n';
+                text += 'Ngày ' + dt.getDate() + '/' + dt.getMonth() + '/' + dt.getFullYear() + '\n';
                 if(info.DMT.length != 0){
                   text += 'Đề: ';
                   info.DMT.forEach(d => {text += d[0] + ' - ' + d[1] +'; '})
