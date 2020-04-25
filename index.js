@@ -821,7 +821,7 @@ bot.on('message', message=> {
                       
                       }
                       else{
-                        return message.reply('Chưa có kqxs ngày ' + td.toDateString());
+                        return message.reply('Chưa có kqxs ngày hôm nay');
                       }
               })
                     
