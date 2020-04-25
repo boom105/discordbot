@@ -754,7 +754,7 @@ bot.on('message', message=> {
               parser.parseURL('https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss',(err,feed)=>{
                 if(err) throw err;
                 var title = feed.items[0].title;
-                      if(dt.getHours() > 12){
+                      if(dt.getHours() >= 12){
                         var result = feed.items[0].content.split('\n').forEach(m => {
                           var temp = m.split(' ')
                           temp.splice(0,1);
