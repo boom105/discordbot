@@ -11,7 +11,7 @@ const token = process.env.BOT_TOKEN;
 const bot = new Client();
 const PREFIX = '!';
 
-let dt = DateTime.local();
+let dt = new Date();
 let parser = new Parser();
 let arr = [];
 
@@ -464,7 +464,7 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'lsd':{
-            if(dt.hour >= 1 && dt.hour <= 11){
+            if(dt.getHours() >= 1 && dt.getHours() <= 11){
               var gambleInfo;
               let lsd = [];
               var text = ' ';
@@ -587,7 +587,7 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'dmt':{
-            if(dt.hour + 7 >= 8 && dt.hour <= 11){
+            if(dt.getHours() >= 1 && dt.getHours() <= 11){
               let gambleInfo;
             let dmt = [];
             let text = ' ';
@@ -754,7 +754,7 @@ bot.on('message', message=> {
               parser.parseURL('https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss',(err,feed)=>{
                 if(err) throw err;
                 var title = feed.items[0].title;
-                      if(dt.hour > 19){
+                      if(dt.getHours() > 12){
                         var result = feed.items[0].content.split('\n').forEach(m => {
                           var temp = m.split(' ')
                           temp.splice(0,1);
@@ -971,7 +971,7 @@ bot.on('message', message=> {
 })
 
 function resetGambleMap(){
-  if(dt.hour >= 17 && dt.hour <=18){
+  if(dt.getHours() >= 17 && dt.getHours() <=18){
     if(gambleMap.size > 0){
       
       var iterator = gambleMap.keys();
