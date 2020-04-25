@@ -821,7 +821,7 @@ bot.on('message', message=> {
                       
                       }
                       else{
-                        return message.reply('Chưa có kqxs ngày ' + dt.getDate() + '/' + dt.getUTCMonth() + '/' + dt.getFullYear());
+                        return message.reply('Chưa có kqxs ngày ' + td.toDateString());
                       }
               })
                     
