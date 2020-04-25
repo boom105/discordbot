@@ -959,7 +959,7 @@ bot.on('message', message=> {
           case 'time':{
             var td = new Date();
             //td.getHours();
-            message.reply(td.toDateString());
+            message.reply(td.toDateString() + '  ' + td.getHours + ':' + td.getMinutes());
             break;
           }
     }
