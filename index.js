@@ -464,7 +464,8 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'lsd':{
-            if(1){
+            var d = new Date();
+            if((d.getHours() <= 1) && (d.getHours() >= 11)){
               var gambleInfo;
               let lsd = [];
               var text = ' ';
@@ -587,7 +588,8 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'dmt':{
-            if((dt.getHours() <= 11) && (dt.getHours() >= 1)){
+            var d = new Date();
+            if((d.getHours() <= 11) && (d.getHours() >= 1)){
               let gambleInfo;
             let dmt = [];
             let text = ' ';
@@ -754,7 +756,8 @@ bot.on('message', message=> {
               parser.parseURL('https://xskt.com.vn/rss-feed/mien-bac-xsmb.rss',(err,feed)=>{
                 if(err) throw err;
                 var title = feed.items[0].title;
-                      if(dt.getHours() >= 12){
+                var d = new Date();
+                      if(d.getHours() >= 12){
                         var result = feed.items[0].content.split('\n').forEach(m => {
                           var temp = m.split(' ')
                           temp.splice(0,1);
@@ -971,7 +974,8 @@ bot.on('message', message=> {
 })
 
 function resetGambleMap(){
-  if((dt.getHours() == 17) || (dt.getHours() == 18)){
+  var d = new Date();
+  if((d.getHours() == 17) || (d.getHours() == 18)){
     if(gambleMap.size > 0){
       
       var iterator = gambleMap.keys();
