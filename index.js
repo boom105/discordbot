@@ -971,7 +971,7 @@ bot.on('message', message=> {
 })
 
 function resetGambleMap(){
-  if(dt.getHours() >= 17 && dt.getHours() <=18){
+  if((dt.getHours() == 17) || (dt.getHours() == 18)){
     if(gambleMap.size > 0){
       
       var iterator = gambleMap.keys();
