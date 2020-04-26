@@ -587,7 +587,7 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'dmt':{
-            if((dt.getHours >= 1) && (dt.getHours() <= 11)){
+            if((dt.getHours() <= 11) && (dt.getHours() >= 1)){
               let gambleInfo;
             let dmt = [];
             let text = ' ';
