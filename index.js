@@ -464,7 +464,7 @@ bot.on('message', message=> {
 
           /*----------------------------------------------------------- */
           case 'lsd':{
-            if(dt.getHours() >= 1 && dt.getHours() <= 11){
+            if(dt.getHours() >= 1){
               var gambleInfo;
               let lsd = [];
               var text = ' ';
