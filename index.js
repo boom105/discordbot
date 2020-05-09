@@ -1,9 +1,9 @@
 const { Client, MessageEmbed, RichEmbed } = require('discord.js');
 const Parser = require('rss-parser');
-const random = require('random')
-const API = require('./BaokimAPI')
+const random = require('random');
+const API = require('./BaokimAPI');
 const { DateTime } = require('luxon');
-const Datastore = require('nedb')
+const Datastore = require('nedb');
 const {generateText,generateValue} = require('./generateText');
 
 const token = process.env.BOT_TOKEN;
@@ -302,7 +302,7 @@ bot.on('message', message=> {
           }
 
           /*-----------------------------------------------------------*/
-          case 'flip': {
+          case 'flip': {//Tung đồng xu
               if(allow){
                 let ran = random.int(1,2);
                 if(ran == 1){
@@ -322,7 +322,7 @@ bot.on('message', message=> {
           }
       
           /*----------------------------------------------------------- */
-          case 'roulette': {
+          case 'roulette': {//roulette nga
             if (allow) {
               db.find({userID: ID},function(err,doc){
                 if(doc[0].points < 1000){
@@ -975,7 +975,7 @@ bot.on('message', message=> {
 
 function resetGambleMap(){
   var d = new Date();
-  if((d.getHours() == 17) || (d.getHours() == 18)){
+  if((d.getHours() >= 17)){
     if(gambleMap.size > 0){
       
       var iterator = gambleMap.keys();
