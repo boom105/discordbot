@@ -8,7 +8,7 @@ const User = require('./database/user');
 const Challenge = require('./database/challenge');
 const { checkValidNumber, checkValidPoint, generateText, generateValue } = require('./util/helper');
 
-const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0-flneq.gcp.mongodb.net/test?retryWrites=true&w=majority`
+const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0-flneq.gcp.mongodb.net/discordbot?retryWrites=true&w=majority`
 
 var bot = require('./discord-client').init();
 

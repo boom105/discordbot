@@ -1,7 +1,8 @@
 const User = require('../database/user');
+require('dotenv').config();
 
 exports.guildMemberAdd = mem => {
-  var channel = mem.guild.channels.cache.find(ch => ch.id === '650591236327079946');
+  var channel = mem.guild.channels.cache.find(ch => ch.id === process.env.MAIN_CHANNEL_ID);
 
     if(!channel) return;
     channel.send(`Chào mừng ${mem.user.username} đến với server của bọn mình.\nVuốt sang trái, vào kênh voice Chung để vô voice chat bạn nhé!`);

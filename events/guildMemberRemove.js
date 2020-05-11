@@ -1,7 +1,8 @@
 const User = require('../database/user');
+require('dotenv').config();
 
 exports.guildMemberRemove = member => {
-    var channel = member.guild.channels.cache.find(ch => ch.id === '650591236327079946');
+    var channel = member.guild.channels.cache.find(ch => ch.id === process.env.MAIN_CHANNEL_ID);
 
     if(!channel) return;
     
