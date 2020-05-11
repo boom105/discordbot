@@ -15,7 +15,7 @@ var bot = require('./discord-client').init();
 const { ready } = require('./events/ready');
 const { guildMemberAdd } = require('./events/guildMemberAdd');
 const { guildMemberRemove } = require('./events/guildMemberRemove');
-const {MessageEmbed} = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 
 const PREFIX = '!';
@@ -33,7 +33,10 @@ bot.on('message', message => {
   let ID = message.author.id;
   let author = message.author.username;
   let args = [];
-  let allow = true;
+  let allow = false;
+  if (message.channel.id === '700715951532015704') {
+    allow = true;
+  }
   if (message.content.startsWith(PREFIX)) {
     args = message.content.substring(PREFIX.length).match(/\S+/g);
 
@@ -178,83 +181,98 @@ bot.on('message', message => {
 
       /*-----------------------------------------*/
       case 'flip': {//coinflip
-        let ran = random.int(1, 2);
-        if (ran == 1) {
+        if (allow) {
+          let ran = random.int(1, 2);
+          if (ran == 1) {
 
-          User.findOne({ userId: ID })
-            .then(user => {
-              user.point += 50;
-              return user.save();
-            })
-            .then(result => {
-              message.channel.send(`Mừng ${author} nhé! Bạn vừa thắng được 50 points rồi!\n Bạn có thể kiểm tra số point hiện có bằng lệnh !point`)
-            })
-            .catch(err => console.log(err));
+            User.findOne({ userId: ID })
+              .then(user => {
+                user.point += 50;
+                return user.save();
+              })
+              .then(result => {
+                message.channel.send(`Mừng ${author} nhé! Bạn vừa thắng được 50 points rồi!\n Bạn có thể kiểm tra số point hiện có bằng lệnh !point`)
+              })
+              .catch(err => console.log(err));
+          }
+          else {
+            message.reply('Xịt rồi! Thử lần sau bạn nhé! Love you=))')
+          }
         }
         else {
-          message.reply('Xịt rồi! Thử lần sau bạn nhé! Love you=))')
+          message.reply('Bạn phải vào #game-channel để sử dụng lệnh này');
         }
         break;
       }
 
       /*-----------------------------------------*/
       case 'roulette': {//russian roulette
-        let msg = '';
-        User.findOne({ userId: ID, point: { $gte: 1000 } })
-          .then(user => {
-            if (!user) {
-              return message.reply('Xin lỗi! Bạn phải có trên 1000 points để chơi trò này')
-            }
-            else {
-              let pos = random.int(1, 3);
-              if (pos == 1) {
-                user.point += 300;
-                msg += 'Mừng bạn đã may mắn sống sót! Bạn  được cộng thêm 300 points vì sự dũng cảm!\n Bạn có thể kiểm tra số point hiện có bằng lệnh !point';
+        if (allow) {
+          let msg = '';
+          User.findOne({ userId: ID, point: { $gte: 1000 } })
+            .then(user => {
+              if (!user) {
+                return message.reply('Xin lỗi! Bạn phải có trên 1000 points để chơi trò này')
               }
               else {
-                user.point -= 1000;
-                msg += 'Đoànnnnng! You have died!!! Bạn vừa bị trừ 1000 points vì sự dại dột =))).\nHãy cân nhắc kỹ lần chơi sau bạn nhé!';
+                let pos = random.int(1, 3);
+                if (pos == 1) {
+                  user.point += 300;
+                  msg += 'Mừng bạn đã may mắn sống sót! Bạn  được cộng thêm 300 points vì sự dũng cảm!\n Bạn có thể kiểm tra số point hiện có bằng lệnh !point';
+                }
+                else {
+                  user.point -= 1000;
+                  msg += 'Đoànnnnng! You have died!!! Bạn vừa bị trừ 1000 points vì sự dại dột =))).\nHãy cân nhắc kỹ lần chơi sau bạn nhé!';
+                }
+                user.save()
+                  .then(result => {
+                    message.reply(msg);
+                  })
+                  .catch(err => console.log(err));
               }
-              user.save()
-                .then(result => {
-                  message.reply(msg);
-                })
-                .catch(err => console.log(err));
-            }
-          })
-          .catch(err => {
-            message.reply(err);
-          })
+            })
+            .catch(err => {
+              message.reply(err);
+            })
+        }
+        else {
+          message.reply('Bạn phải vào #game-channel để sử dụng lệnh này');
+        }
         break;
       }
 
       /*-----------------------------------------*/
       case 'moneyheist': {
-        let text = " ";
-        User.findOne({ userId: ID, point: { $gte: 200 } })
-          .then(user => {
-            if (!user) {
-              return message.reply('Bạn cần tối thiểu 200 points để chơi trò này');
-            }
-            else {
-              let pos = random.int(1, 100);
-
-              if (pos === 1) {
-                user.point += 20000;
-                text += 'OHHHHHHHHHHHHHHHHHHHHHHHHHH. Bạn vừa cướp nhà băng thành công! Bạn cướp được 20000 points và nhận được 1 phần quà đặc biệt từ Big Boss!';
+        if (allow) {
+          let text = " ";
+          User.findOne({ userId: ID, point: { $gte: 200 } })
+            .then(user => {
+              if (!user) {
+                return message.reply('Bạn cần tối thiểu 200 points để chơi trò này');
               }
               else {
-                user.point -= 200;
-                text += 'Bạn vừa bị cảnh sát bắt và phải nộp phạt 200 points tiền bảo lãnh vì các hành vi sau:\nCướp ngân hàng, cưỡng dâm một con heo và đẩy bà già xuống biển!!!!!!!!!!!'
-              }
+                let pos = random.int(1, 100);
 
-              return user.save()
-            }
-          })
-          .then(result => {
-            message.reply(text)
-          })
-          .catch(err => console.log(err));
+                if (pos === 1) {
+                  user.point += 20000;
+                  text += 'OHHHHHHHHHHHHHHHHHHHHHHHHHH. Bạn vừa cướp nhà băng thành công! Bạn cướp được 20000 points và nhận được 1 phần quà đặc biệt từ Big Boss!';
+                }
+                else {
+                  user.point -= 200;
+                  text += 'Bạn vừa bị cảnh sát bắt và phải nộp phạt 200 points tiền bảo lãnh vì các hành vi sau:\nCướp ngân hàng, cưỡng dâm một con heo và đẩy bà già xuống biển!!!!!!!!!!!'
+                }
+
+                return user.save()
+              }
+            })
+            .then(result => {
+              message.reply(text)
+            })
+            .catch(err => console.log(err));
+        }
+        else {
+          message.reply('Bạn phải vào #game-channel để sử dụng lệnh này');
+        }
         break;
       }
 
@@ -376,7 +394,7 @@ bot.on('message', message => {
       /*-----------------------------------------*/
       case 'lsd': {//Ghi Lô
         let date = new Date();
-        if (date.getHours() >= 6 && date.getHours() <= 18) {
+        if (date.getHours() >= 1 && date.getHours() <= 11) {
           if (args[1].includes(',')) {
             let temp = args[1].split(',');
             let count = 0;
@@ -489,7 +507,7 @@ bot.on('message', message => {
           }
         }
         else {
-          message.reply('Bạn chỉ có thể ghi lô từ 6h đến 18h hàng ngày');
+          message.reply('Bạn chỉ có thể ghi lô từ 8h đến 18h hàng ngày');
         }
         break;
       }
@@ -497,7 +515,7 @@ bot.on('message', message => {
       /*-----------------------------------------*/
       case 'dmt': {//Ghi Đề
         let date = new Date();
-        if (date.getHours() >= 6 && date.getHours() <= 18) {
+        if (date.getHours() >= 1 && date.getHours() <= 11) {
           if (args[1].includes(',')) {
             let temp = args[1].split(',');
             let count = 0;
@@ -648,7 +666,7 @@ bot.on('message', message => {
       /*-----------------------------------------*/
       case 'checkout': {
         let date = new Date();
-        if (date.getHours() >= 19 || date.getHours() < 2) {
+        if (date.getHours() >= 12 && date.getHours() < 19) {
           User.findOne({ userId: ID })
             .then(user => {
               if (!user) {
@@ -766,7 +784,7 @@ bot.on('message', message => {
               if (!user) {
                 return message.reply('Bạn cần tối thiểu 30k point để chơi trò này');
               }
-              if(!args[1]){
+              if (!args[1]) {
                 return message.reply('Sai cú pháp: Command: !lottery nhà_mạng');
               }
               else {
@@ -866,7 +884,7 @@ bot.on('message', message => {
 
 function resetGamble() {
   var d = new Date();
-  if ((d.getHours() >= 2 && d.getHours() <= 3)) {
+  if ((d.getHours() >= 19 && d.getHours() <= 20)) {
     User.find({ $or: [{ 'gamble.lsd': { $exists: true, $ne: [] } }, { 'gamble.dmt': { $exists: true, $ne: [] } }] })
       .then(users => {
         let guild = bot.guilds.cache.get(process.env.GUILD_ID);
