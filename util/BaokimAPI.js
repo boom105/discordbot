@@ -1,5 +1,7 @@
 const axios = require('axios');
 const randomstring = require('randomstring');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 
 const API_KEY = process.env.API_KEY;

@@ -1,5 +1,13 @@
+exports.checkValidPoint = (point) => {
+    return Number.isInteger(parseInt(point,10)) && parseInt(point,10) > 0;
+}
 
-function generateText(count,num,amount)
+exports.checkValidNumber = (num) => {
+    return Number.isInteger(parseInt(num,10)) && parseInt(num,10) > 0 && parseInt(num,10) <= 99;
+}
+
+
+exports.generateText = (count,num,amount) =>
 {
     var text = '';
     switch(count)
@@ -42,7 +50,7 @@ function generateText(count,num,amount)
     return text;
 }
 
-function generateValue(count,amount)
+exports.generateValue = (count,amount) =>
 {
     var val = 0;
     switch(count)
@@ -75,9 +83,4 @@ function generateValue(count,amount)
     } 
 
     return val;
-}
-
-module.exports = {
-    generateText : generateText,
-    generateValue : generateValue
 }
