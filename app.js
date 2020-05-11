@@ -876,7 +876,7 @@ bot.on('message', message => {
 
       }
 
-      case 'command':{
+      case 'cmd':{
         message.send(`
           \n--------------------GAME LIST------------------\n
           1.flip: command: !flip wr:1/2 thưởng-phạt: 50-0;\n
