@@ -877,7 +877,7 @@ bot.on('message', message => {
       }
 
       case 'cmd':{
-        message.send(`
+        message.channel.send(`
           \n--------------------GAME LIST------------------\n
           1.flip: command: !flip wr:1/2 thưởng-phạt: 50-0;\n
           2.roulette: command: !roulette  /wr:4/6 thưởng-phạt:300-1000 requirement: 1000 points\n
