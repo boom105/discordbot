@@ -876,6 +876,28 @@ bot.on('message', message => {
 
       }
 
+      case 'command':{
+        message.send(`
+          \n--------------------GAME LIST------------------\n
+          1.flip: command: !flip wr:1/2 thưởng-phạt: 50-0;\n
+          2.roulette: command: !roulette  /wr:4/6 thưởng-phạt:300-1000 requirement: 1000 points\n
+          3.moneyheist: command: !moneyheist  /wr:1/100 thưởng-phạt: 20k-200, requirement: 200 points (**)\n
+          4.lottery: command: !lottery nhà_mạng /wr:1/3 thưởng-phạt: card 20k - 30k points\n
+          5.challenge:command:!cl @member số_point || !cl -accept || !cl -cancel\n
+          -------------------- LÔ ĐỀ----------------------\n
+          1.Lô: command: !lsd number(s) số_points (VD: !lsd 12 1000 hoặc !lsd 12,13,14,15 1000)\n 
+          2.đề: command: !dmt number(s) số_points (VD: !dmt 12 1000 hoặc !dmt 12,13,14,15 1000)\n
+          3.log: command: !mylog để xem những con đã ghi\n
+          4.soi kết quả: !checkout :chỉ soi đc sau 19h và tới 02h sáng ngày hôm sau chưa nhận, mọi kết quả sẽ bị xóa\n
+          --------------------Tiện ích--------------------------\n
+          1.!avatar hoặc !avatar @member\n
+          2.!time: thời gian mốc GMT +0\n
+          3.!kqxs: Xem kqxs ngày gần nhất
+        
+        `)
+        break;
+      }
+
       default:
         break;
     }
