@@ -883,12 +883,13 @@ bot.on('message', message => {
           2.roulette: command: !roulette  /wr:4/6 thưởng-phạt:300-1000 requirement: 1000 points
           3.moneyheist: command: !moneyheist  /wr:1/100 thưởng-phạt: 20k-200, requirement: 200 points (**)
           4.lottery: command: !lottery nhà_mạng /wr:1/3 thưởng-phạt: card 20k - 30k points
-          5.challenge:command:!cl @member số_point || !cl -accept || !cl -cancel
+          5.challenge:command:!cl @member số_point or !cl -accept or !cl -cancel
           -------------------- ------------------LÔ ĐỀ-------------------------------------------------
           1.Lô: command: !lsd number(s) số_points (VD: !lsd 12 1000 hoặc !lsd 12,13,14,15 1000) 
           2.đề: command: !dmt number(s) số_points (VD: !dmt 12 1000 hoặc !dmt 12,13,14,15 1000)
           3.log: command: !mylog để xem những con đã ghi
-          4.soi kết quả: !checkout :chỉ soi đc sau 19h và tới 02h sáng ngày hôm sau chưa nhận, mọi kết quả sẽ bị xóa\n
+          4.soi kết quả: !checkout :chỉ soi đc sau 19h và tới 02h sáng ngày hôm sau chưa nhận, 
+            mọi kết quả sẽ bị xóa
           ----------------------------------------Tiện ích--------------------------------------------
           1.!avatar hoặc !avatar @member
           2.!time: thời gian mốc GMT +0
