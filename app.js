@@ -892,7 +892,8 @@ bot.on('message', message => {
           --------------------Tiện ích--------------------------\n
           1.!avatar hoặc !avatar @member\n
           2.!time: thời gian mốc GMT +0\n
-          3.!kqxs: Xem kqxs ngày gần nhất
+          3.!kqxs: Xem kqxs ngày gần nhất\n
+          4.!point hoặc !point -all hoặc !point -top
         
         `)
         break;
